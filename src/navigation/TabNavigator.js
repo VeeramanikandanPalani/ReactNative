@@ -3,6 +3,10 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 
 import CourseListScreen from "../screens/CourseListScreen";
+import Feeds from "../screens/Feeds";
+import ProfileScreen from "../screens/ProfileScreen";
+import MyZoneScreen from "../screens/MyZoneScreen";
+import MyZoneStack from "./MyZoneStack";
 
 const Tab = createBottomTabNavigator();
 
@@ -19,9 +23,11 @@ export default function TabNavigator() {
           if (route.name === "Courses") {
             iconName = "book-outline";
           } else if (route.name === "MyZone") {
-            iconName = "rocket-outline";
+            iconName = "grid-outline";
           } else if (route.name === "Profile") {
             iconName = "person-outline";
+          } else if (route.name === "Feeds") {
+            iconName = "newspaper-outline";
           }
 
           // Return the icon component
@@ -29,9 +35,10 @@ export default function TabNavigator() {
         },
       })}
     >
+      <Tab.Screen name="Feeds" component={Feeds} />
+      <Tab.Screen name="MyZone" component={MyZoneStack} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
       <Tab.Screen name="Courses" component={CourseListScreen} />
-      <Tab.Screen name="MyZone" component={CourseListScreen} />
-      <Tab.Screen name="Profile" component={CourseListScreen} />
     </Tab.Navigator>
   );
 }
