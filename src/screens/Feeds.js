@@ -8,20 +8,33 @@ import {
   TouchableOpacity,
   TextInput,
   StatusBar,
+  Dimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import Modal from "react-native-modal";
+import ImageViewer from "react-native-image-zoom-viewer";
+import VideoPlayer from "react-native-video-controls";
 
+const { width } = Dimensions.get("window");
+
+// Logged-in user
+const USER = { name: "Veera" };
+
+// Sample feed data
 const DATA = [
   {
     id: "1",
-    postedBy: "Admin",
+    postedBy: "Veeramanikandan Pazhani",
     time: "1 hr ago",
     title: "Course Completed",
     message:
       "🎉 Congratulations to Dr. John for completing Infection Control Course!",
     image:
-      "https://images.unsplash.com/photo-1588776814546-7e4db1bbd5ff?crop=entropy&cs=tinysrgb&fit=max&w=800&q=60",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
+    video: null,
     likes: 4,
+    views: 120,
     comments: ["Well done!", "Congrats!"],
   },
   {
@@ -31,8 +44,10 @@ const DATA = [
     title: "New Healthcare Course",
     message:
       "🩺 New Patient Safety & Clinical Excellence course now available.",
-    image: null, // No image
+    image: null,
+    video: "https://www.w3schools.com/html/mov_bbb.mp4",
     likes: 2,
+    views: 80,
     comments: ["Looking forward to this course."],
   },
   {
@@ -43,16 +58,21 @@ const DATA = [
     message:
       "🧘 Take a 5-minute break and do a mindfulness exercise. Your mental health matters.",
     image:
-      "https://images.unsplash.com/photo-1605902711622-cfb43c44334c?crop=entropy&cs=tinysrgb&fit=max&w=800&q=60",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
+    video: null,
     likes: 1,
+    views: 60,
     comments: ["Great reminder!"],
   },
 ];
 
 const FeedsScreen = () => {
   const [feeds, setFeeds] = useState(DATA);
+  const [searchText, setSearchText] = useState("");
   const [commentText, setCommentText] = useState({});
-  const [showComments, setShowComments] = useState({}); // Track toggle per post
+  const [showComments, setShowComments] = useState({});
+  const [modalVisible, setModalVisible] = useState(false);
+  const [activeMedia, setActiveMedia] = useState(null);
 
   const handleLike = (id) => {
     setFeeds((prev) =>
@@ -72,81 +92,98 @@ const FeedsScreen = () => {
       ),
     );
     setCommentText({ ...commentText, [id]: "" });
-    setShowComments({ ...showComments, [id]: true }); // Show comments after adding
+    setShowComments({ ...showComments, [id]: true });
   };
 
   const toggleComments = (id) => {
     setShowComments((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
+  const filteredFeeds = feeds.filter(
+    (item) =>
+      item.title.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.postedBy.toLowerCase().includes(searchText.toLowerCase()),
+  );
+
   const renderItem = ({ item }) => {
     const firstLetter = item.postedBy?.[0]?.toUpperCase() || "U";
     const commentsVisible = showComments[item.id] || false;
 
     return (
-      <View style={styles.card}>
-        {/* Header */}
-        <View style={styles.header}>
-          <View style={styles.avatar}>
-            <Text style={styles.avatarText}>{firstLetter}</Text>
+      <View style={styles.cardWrapper}>
+        <View style={styles.card}>
+          {/* Header */}
+          <View style={styles.cardHeader}>
+            <View style={styles.avatar}>
+              <Text style={styles.avatarText}>{firstLetter}</Text>
+            </View>
+            <View style={styles.postedByContainer}>
+              <Text style={styles.postedBy}>{item.postedBy}</Text>
+              <Text style={styles.time}>{item.time}</Text>
+            </View>
           </View>
-          <View>
-            <Text style={styles.postedBy}>{item.postedBy}</Text>
-            <Text style={styles.time}>{item.time}</Text>
-          </View>
-        </View>
 
-        {/* Content */}
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.message}>{item.message}</Text>
-        {item.image && (
-          <Image source={{ uri: item.image }} style={styles.image} />
-        )}
+          {/* Title & Message */}
+          <Text style={styles.title}>{item.title}</Text>
+          <Text style={styles.message}>{item.message}</Text>
 
-        {/* Like & Comment Row */}
-        <View style={styles.actionRow}>
-          {/* Like Button */}
-          <TouchableOpacity
-            style={styles.actionBtn}
-            onPress={() => handleLike(item.id)}
-          >
-            <Text style={styles.likeText}>❤️ {item.likes} Like</Text>
-          </TouchableOpacity>
-
-          {/* Toggle Comments */}
-          {item.comments.length > 0 && (
+          {/* Image or Video */}
+          {item.image && (
             <TouchableOpacity
-              style={styles.actionBtn}
-              onPress={() => toggleComments(item.id)}
+              onPress={() => {
+                setActiveMedia({ type: "image", uri: item.image });
+                setModalVisible(true);
+              }}
             >
-              <Text style={styles.commentToggle}>
-                💬 {item.comments.length} Comments
-              </Text>
+              <Image source={{ uri: item.image }} style={styles.image} />
             </TouchableOpacity>
           )}
-        </View>
 
-        {/* Comments Section */}
-        {commentsVisible &&
-          item.comments.map((comment, index) => (
-            <Text key={index} style={styles.comment}>
-              💬 {comment}
+          {item.video && (
+            <TouchableOpacity
+              onPress={() => {
+                setActiveMedia({ type: "video", uri: item.video });
+                setModalVisible(true);
+              }}
+            >
+              <View style={styles.videoPlaceholder}>
+                <Icon name="play-circle-outline" size={50} color="#fff" />
+                <Text style={{ color: "#fff", marginTop: 5 }}>Video</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+
+          {/* Stats row */}
+          <View style={styles.statsRow}>
+            <Text style={styles.statText}>❤️ {item.likes} Likes</Text>
+            <Text style={styles.statText}>👁️ {item.views} Views</Text>
+            <Text style={styles.statText}>
+              💬 {item.comments.length} Comments
             </Text>
-          ))}
+          </View>
 
-        {/* Add Comment Input */}
-        <View style={styles.inputRow}>
-          <TextInput
-            placeholder="Add comment..."
-            style={styles.input}
-            value={commentText[item.id] || ""}
-            onChangeText={(text) =>
-              setCommentText({ ...commentText, [item.id]: text })
-            }
-          />
-          <TouchableOpacity onPress={() => handleAddComment(item.id)}>
-            <Text style={styles.postBtn}>Post</Text>
-          </TouchableOpacity>
+          {/* Comments */}
+          {commentsVisible &&
+            item.comments.map((comment, index) => (
+              <Text key={index} style={styles.comment}>
+                💬 {comment}
+              </Text>
+            ))}
+
+          {/* Add Comment */}
+          <View style={styles.inputRow}>
+            <TextInput
+              placeholder="Add comment..."
+              style={styles.input}
+              value={commentText[item.id] || ""}
+              onChangeText={(text) =>
+                setCommentText({ ...commentText, [item.id]: text })
+              }
+            />
+            <TouchableOpacity onPress={() => handleAddComment(item.id)}>
+              <Text style={styles.postBtn}>Post</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
@@ -154,18 +191,65 @@ const FeedsScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
-      <StatusBar barStyle="dark-content" backgroundColor="#EAF6F9" />
-      <View style={styles.titleContainer}>
-        <Text style={styles.pageTitle}>Gurucool Feeds</Text>
+      <StatusBar barStyle="light-content" backgroundColor="#2A9D8F" />
+
+      {/* Header */}
+      <View style={styles.topHeader}>
+        <View style={styles.headerRow}>
+          <View style={styles.GHeader}>
+            <Text style={styles.pageTitle}>Gurucool Feeds</Text>
+            <Icon
+              name="sunglasses"
+              size={32}
+              color="#faf7cd"
+              style={{ marginLeft: 8 }}
+            />
+          </View>
+          <Text style={styles.usernameText}> {USER.name}</Text>
+        </View>
+
+        {/* Search Bar */}
+        <TextInput
+          placeholder="Search by title or author..."
+          placeholderTextColor="#999"
+          style={styles.searchInput}
+          value={searchText}
+          onChangeText={setSearchText}
+        />
       </View>
 
+      {/* Feed List */}
       <FlatList
-        data={feeds}
+        data={filteredFeeds}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 20 }}
       />
+
+      {/* Modal for zoomable image/video */}
+      <Modal
+        isVisible={modalVisible}
+        onBackdropPress={() => setModalVisible(false)}
+        style={{ margin: 0 }}
+      >
+        {activeMedia?.type === "image" && (
+          <ImageViewer
+            imageUrls={[{ url: activeMedia.uri }]}
+            enableSwipeDown
+            onSwipeDown={() => setModalVisible(false)}
+            backgroundColor="#000"
+          />
+        )}
+        {activeMedia?.type === "video" && (
+          <VideoPlayer
+            source={{ uri: activeMedia.uri }}
+            onBack={() => setModalVisible(false)}
+            fullscreen
+            style={{ width: width, height: width * (9 / 16) }}
+          />
+        )}
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -173,108 +257,95 @@ const FeedsScreen = () => {
 export default FeedsScreen;
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#EAF6F9",
-  },
+  safeArea: { flex: 1, backgroundColor: "#EAF6F9" },
 
-  titleContainer: {
+  topHeader: {
+    backgroundColor: "#2a739d", // Healthcare teal
+    paddingVertical: 16,
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
-
-  pageTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#1D3557",
-  },
-
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 14,
-    padding: 15,
-    marginHorizontal: 16,
-    marginBottom: 14,
-    elevation: 3,
-  },
-
-  header: {
+  headerRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 10,
+    justifyContent: "space-between",
+    marginBottom: 12,
+  },
+  GHeader: {
+    flexDirection: "row",
+  },
+  pageTitle: { color: "#fff", fontSize: 22, fontWeight: "bold" },
+  usernameText: {
+    color: "#fff",
+    fontSize: 16,
+    marginLeft: 6,
+    fontWeight: "500",
+  },
+  searchInput: {
+    backgroundColor: "#EAF6F9",
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    fontSize: 14,
+    borderWidth: 1,
+    borderColor: "#cfd8dc",
   },
 
+  cardWrapper: {
+    marginHorizontal: 16,
+    marginVertical: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+    borderRadius: 14,
+    backgroundColor: "#fff",
+  },
+  card: { borderRadius: 14, padding: 12, backgroundColor: "#fff" },
+  cardHeader: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
   avatar: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: "#2A9D8F",
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#F4A261",
     justifyContent: "center",
     alignItems: "center",
     marginRight: 10,
   },
-
-  avatarText: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
-
-  postedBy: {
-    fontWeight: "bold",
-    fontSize: 14,
-    color: "#264653",
-  },
-
-  time: {
-    fontSize: 12,
-    color: "#6c757d",
-  },
-
+  avatarText: { color: "#fff", fontWeight: "bold" },
+  postedByContainer: { justifyContent: "center" },
+  postedBy: { fontWeight: "bold", color: "#264653", fontSize: 14 },
+  time: { fontSize: 12, color: "#6c757d" },
   title: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: "bold",
-    marginBottom: 4,
+    marginBottom: 6,
+    color: "#1D3557",
   },
-
-  message: {
-    fontSize: 14,
-    marginBottom: 8,
-    lineHeight: 20,
-  },
-
-  image: {
+  message: { fontSize: 14, color: "#264653", marginBottom: 8, lineHeight: 20 },
+  image: { width: "100%", height: 180, borderRadius: 10, marginBottom: 8 },
+  videoPlaceholder: {
     width: "100%",
     height: 180,
     borderRadius: 10,
+    backgroundColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 8,
   },
-
-  likeText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#E63946",
-    marginBottom: 6,
-  },
-
-  commentToggle: {
-    fontSize: 13,
-    fontWeight: "bold",
-    color: "#2A9D8F",
-    marginBottom: 6,
-  },
-
-  comment: {
-    fontSize: 13,
-    marginBottom: 3,
-    color: "#444",
-  },
-
-  inputRow: {
+  statsRow: {
     flexDirection: "row",
-    alignItems: "center",
-    marginTop: 6,
+    justifyContent: "space-between",
+    paddingVertical: 6,
+    borderTopWidth: 0.5,
+    borderTopColor: "#ccc",
+    marginBottom: 6,
   },
-
+  statText: { fontSize: 13, color: "#2A9D8F", fontWeight: "600" },
+  comment: { fontSize: 13, marginBottom: 3, color: "#444" },
+  inputRow: { flexDirection: "row", alignItems: "center", marginTop: 6 },
   input: {
     flex: 1,
     borderWidth: 1,
@@ -285,20 +356,5 @@ const styles = StyleSheet.create({
     fontSize: 13,
     backgroundColor: "#F8FBFC",
   },
-
-  postBtn: {
-    marginLeft: 10,
-    fontWeight: "bold",
-    color: "#2A9D8F",
-  },
-  actionRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 6,
-  },
-
-  actionBtn: {
-    marginRight: 20,
-  },
+  postBtn: { marginLeft: 10, fontWeight: "bold", color: "#2A9D8F" },
 });

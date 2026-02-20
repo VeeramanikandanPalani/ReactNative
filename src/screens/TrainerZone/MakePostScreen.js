@@ -46,7 +46,6 @@ export default function MakePostScreen({ navigation }) {
         {/* Title */}
         <Text style={styles.label}>Title</Text>
         <View style={styles.inputWrapper}>
-          <Ionicons name="pencil-outline" size={20} color="#4F46E5" />
           <TextInput
             style={styles.input}
             placeholder="Enter post title"
@@ -63,12 +62,6 @@ export default function MakePostScreen({ navigation }) {
             { height: 120, alignItems: "flex-start" },
           ]}
         >
-          <MaterialIcons
-            name="description"
-            size={20}
-            color="#4F46E5"
-            style={{ marginTop: 10 }}
-          />
           <TextInput
             style={[styles.input, { height: 110 }]}
             placeholder="Write your post content here"

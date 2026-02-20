@@ -13,7 +13,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const USER_PROFILE = {
   name: "Dr. John Doe",
-  email: "john.doe@example.com",
+  designation: "Infection Control Specialist",
+  completedTrainings: 12,
   avatar:
     "https://images.unsplash.com/photo-1603415526960-f77fbeac03c1?crop=entropy&cs=tinysrgb&fit=max&w=200&q=60",
 };
@@ -24,7 +25,7 @@ const USER_POSTS = [
     title: "Completed Infection Control Course",
     message: "🎉 I just completed the Infection Control course!",
     image:
-      "https://images.unsplash.com/photo-1588776814546-7e4db1bbd5ff?crop=entropy&cs=tinysrgb&fit=max&w=800&q=60",
+      "https://images.unsplash.com/photo-1596496055392-2dfe5e2a3127?auto=format&fit=crop&w=800&q=80",
     likes: 5,
     comments: ["Congrats!", "Well done!"],
   },
@@ -61,7 +62,7 @@ const ProfileScreen = () => {
       ),
     );
     setCommentText({ ...commentText, [id]: "" });
-    setShowComments({ ...showComments, [id]: true }); // show comments after adding
+    setShowComments({ ...showComments, [id]: true });
   };
 
   const toggleComments = (id) => {
@@ -73,27 +74,27 @@ const ProfileScreen = () => {
 
     return (
       <View style={styles.card}>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.message}>{item.message}</Text>
+        <Text style={styles.postTitle}>{item.title}</Text>
+        <Text style={styles.postMessage}>{item.message}</Text>
         {item.image && (
-          <Image source={{ uri: item.image }} style={styles.image} />
+          <Image source={{ uri: item.image }} style={styles.postImage} />
         )}
 
-        {/* Inline Like & Comment */}
+        {/* Like & Comment Row */}
         <View style={styles.actionRow}>
           <TouchableOpacity
-            style={styles.actionBtn}
             onPress={() => handleLike(item.id)}
+            style={styles.actionBtn}
           >
-            <Text style={styles.likeText}>❤️ {item.likes} Like</Text>
+            <Text style={styles.likeText}>❤️ {item.likes} Likes</Text>
           </TouchableOpacity>
 
           {item.comments.length > 0 && (
             <TouchableOpacity
-              style={styles.actionBtn}
               onPress={() => toggleComments(item.id)}
+              style={styles.actionBtn}
             >
-              <Text style={styles.commentToggle}>
+              <Text style={styles.commentText}>
                 💬 {item.comments.length} Comments
               </Text>
             </TouchableOpacity>
@@ -108,7 +109,7 @@ const ProfileScreen = () => {
             </Text>
           ))}
 
-        {/* Add Comment */}
+        {/* Add Comment Input */}
         <View style={styles.inputRow}>
           <TextInput
             placeholder="Add comment..."
@@ -127,15 +128,25 @@ const ProfileScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={["top"]}>
-      <StatusBar barStyle="dark-content" backgroundColor="#EAF6F9" />
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle="light-content" backgroundColor="#264653" />
+
+      {/* Top Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Profile</Text>
+      </View>
 
       {/* Profile Info */}
-      <View style={styles.profileHeader}>
+      <View style={styles.profileContainer}>
         <Image source={{ uri: USER_PROFILE.avatar }} style={styles.avatar} />
-        <View style={{ marginLeft: 12 }}>
+        <View style={styles.profileDetails}>
           <Text style={styles.profileName}>{USER_PROFILE.name}</Text>
-          <Text style={styles.profileEmail}>{USER_PROFILE.email}</Text>
+          <Text style={styles.profileDesignation}>
+            {USER_PROFILE.designation}
+          </Text>
+          <Text style={styles.profileTrainings}>
+            🏆 Completed Trainings: {USER_PROFILE.completedTrainings}
+          </Text>
         </View>
       </View>
 
@@ -159,32 +170,59 @@ const styles = StyleSheet.create({
     backgroundColor: "#EAF6F9",
   },
 
-  profileHeader: {
-    flexDirection: "row",
-    alignItems: "center",
+  header: {
+    backgroundColor: "#264653",
+    paddingVertical: 16,
     paddingHorizontal: 16,
-    paddingVertical: 12,
+  },
+
+  headerTitle: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#fff",
+  },
+
+  profileContainer: {
+    flexDirection: "row",
     backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#cfd8dc",
+    margin: 16,
+    borderRadius: 14,
+    padding: 12,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 4,
+    elevation: 3,
   },
 
   avatar: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 70,
+    height: 70,
+    borderRadius: 35,
     backgroundColor: "#2A9D8F",
+  },
+
+  profileDetails: {
+    marginLeft: 12,
   },
 
   profileName: {
     fontSize: 18,
     fontWeight: "bold",
     color: "#1D3557",
+    marginBottom: 2,
   },
 
-  profileEmail: {
+  profileDesignation: {
     fontSize: 14,
     color: "#6c757d",
+    marginBottom: 2,
+  },
+
+  profileTrainings: {
+    fontSize: 13,
+    color: "#2A9D8F",
   },
 
   card: {
@@ -196,19 +234,21 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
 
-  title: {
+  postTitle: {
     fontSize: 15,
     fontWeight: "bold",
     marginBottom: 4,
+    color: "#1D3557",
   },
 
-  message: {
+  postMessage: {
     fontSize: 14,
     marginBottom: 8,
     lineHeight: 20,
+    color: "#264653",
   },
 
-  image: {
+  postImage: {
     width: "100%",
     height: 180,
     borderRadius: 10,
@@ -221,9 +261,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
 
-  actionBtn: {
-    marginRight: 20,
-  },
+  actionBtn: {},
 
   likeText: {
     fontSize: 14,
@@ -231,7 +269,7 @@ const styles = StyleSheet.create({
     color: "#E63946",
   },
 
-  commentToggle: {
+  commentText: {
     fontSize: 13,
     fontWeight: "bold",
     color: "#2A9D8F",
