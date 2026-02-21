@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import RotatingSettingsIcon from "./RotatingSettingsIcon ";
 
-export default function PageLayout({ title, subtitle, children, image }) {
+export default function ProfileLayout({ title, subtitle, children, image }) {
   return (
     <View style={styles.container}>
       {/* ===== HEADER ===== */}
@@ -23,8 +23,8 @@ export default function PageLayout({ title, subtitle, children, image }) {
 
 const styles = StyleSheet.create({
   headerSection: {
-    paddingTop: 40,
-    paddingBottom: 60,
+    paddingTop: 20,
+    paddingBottom: 30,
     alignItems: "center",
     borderBottomLeftRadius: 40,
     borderBottomRightRadius: 40,

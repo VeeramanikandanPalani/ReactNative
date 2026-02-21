@@ -1,20 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   View,
   Text,
-  FlatList,
   TouchableOpacity,
   Alert,
   TextInput,
+  Animated,
+  ScrollView,
 } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
-import styles from "../../styles/courseStyles";
+import { MaterialIcons, Ionicons } from "@expo/vector-icons";
+import PageLayout from "../components/PageLayout";
 
 const coursesData = [
   {
     id: "1",
     title: "React Native Basics",
+    facilitator: "John Doe",
     dateTime: "2026-02-20 10:00 AM",
     participants: 25,
     location: "Online",
@@ -24,6 +26,7 @@ const coursesData = [
   {
     id: "2",
     title: "Advanced JavaScript",
+    facilitator: "Jane Smith",
     dateTime: "2026-02-22 2:00 PM",
     participants: 30,
     location: "Online",
@@ -33,6 +36,7 @@ const coursesData = [
   {
     id: "3",
     title: "UI/UX Design Fundamentals",
+    facilitator: "Alice Johnson",
     dateTime: "2026-02-25 11:00 AM",
     participants: 20,
     location: "Online",
@@ -42,6 +46,7 @@ const coursesData = [
   {
     id: "4",
     title: "Python for Data Science",
+    facilitator: "Bob Williams",
     dateTime: "2026-02-28 1:00 PM",
     participants: 40,
     location: "Online",
@@ -54,9 +59,22 @@ export default function CourseListScreen({ navigation }) {
   const [enrolled, setEnrolled] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [filteredCourses, setFilteredCourses] = useState(coursesData);
-
-  // Track which course IDs are expanded
   const [expandedCourses, setExpandedCourses] = useState([]);
+
+  // Animation values for each course
+  const animValues = useRef(
+    coursesData.map(() => new Animated.Value(0)),
+  ).current;
+
+  useEffect(() => {
+    animValues.forEach((anim, index) => {
+      Animated.timing(anim, {
+        toValue: 1,
+        duration: 500 + index * 100,
+        useNativeDriver: true,
+      }).start();
+    });
+  }, []);
 
   const handleEnroll = (id) => {
     if (!enrolled.includes(id)) {
@@ -82,67 +100,180 @@ export default function CourseListScreen({ navigation }) {
     }
   };
 
-  const renderItem = ({ item }) => (
-    <View style={styles.card}>
-      {/* Title + Enroll inline */}
-      <View style={styles.titleRow}>
-        <Text style={styles.title}>{item.title}</Text>
-        <TouchableOpacity
-          style={styles.enrollButton}
-          onPress={() => handleEnroll(item.id)}
-        >
-          <Text style={styles.enrollText}>
-            {enrolled.includes(item.id) ? "Enrolled" : "Enroll"}
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Other course details */}
-      <Text style={styles.detail}>📅 {item.dateTime}</Text>
-      <Text style={styles.detail}>👥 {item.participants} Participants</Text>
-      <Text style={styles.detail}>📍 {item.location}</Text>
-
-      {/* View button */}
-      <TouchableOpacity
-        style={styles.viewButton}
-        onPress={() => toggleDescription(item.id)}
-      >
-        <Text style={styles.viewButtonText}>
-          {expandedCourses.includes(item.id) ? "Hide" : "View"}
-        </Text>
-      </TouchableOpacity>
-
-      {/* Description shown only if expanded */}
-      {expandedCourses.includes(item.id) && (
-        <Text style={styles.description}>{item.description}</Text>
-      )}
-    </View>
-  );
-
   return (
-    <SafeAreaView style={styles.container}>
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search courses..."
-          value={searchText}
-          onChangeText={setSearchText}
-        />
-        <TouchableOpacity
-          style={styles.searchIconButton}
-          onPress={handleSearch}
-        >
-          <MaterialIcons name="search" size={22} color="#fff" />
-        </TouchableOpacity>
-      </View>
-
-      <FlatList
-        data={filteredCourses}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        contentContainerStyle={styles.listContent}
+    <>
+      <PageLayout
+        title="Gurucool Courses"
+        subtitle="Available courses for trainers"
+        image={{
+          uri: "https://cdn-icons-png.flaticon.com/512/1055/1055687.png",
+        }}
       />
-    </SafeAreaView>
+      <View style={styles.MainCard}>
+        {/* Search Bar */}
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search courses..."
+            value={searchText}
+            onChangeText={setSearchText}
+          />
+          <TouchableOpacity
+            style={styles.searchIconButton}
+            onPress={handleSearch}
+          >
+            <MaterialIcons name="search" size={22} color="#fff" />
+          </TouchableOpacity>
+        </View>
+        {/* Course Cards */}
+        <ScrollView contentContainerStyle={{ paddingBottom: 80 }}>
+          {filteredCourses.map((item, index) => {
+            const animStyle = {
+              opacity: animValues[index],
+              transform: [
+                {
+                  translateY: animValues[index].interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [20, 0],
+                  }),
+                },
+              ],
+            };
+
+            return (
+              <Animated.View key={item.id} style={[styles.card, animStyle]}>
+                {/* Title + Enroll */}
+                <View style={styles.titleRow}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.title} numberOfLines={2}>
+                      {item.title}
+                    </Text>
+                    <Text style={styles.facilitator}>
+                      Facilitator: {item.facilitator || "TBA"}
+                    </Text>
+                  </View>
+
+                  <TouchableOpacity
+                    style={styles.enrollButton}
+                    onPress={() => handleEnroll(item.id)}
+                  >
+                    <Ionicons name="school-outline" size={16} color="#fff" />
+                    <Text style={styles.enrollText}>
+                      {enrolled.includes(item.id) ? "Enrolled" : "Enroll"}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
+                {/* Course Details */}
+                <Text style={styles.detail}>📅 {item.dateTime}</Text>
+                <Text style={styles.detail}>
+                  👥 {item.participants} Participants
+                </Text>
+                <Text style={styles.detail}>📍 {item.location}</Text>
+
+                {/* Description Toggle */}
+                <TouchableOpacity
+                  style={styles.viewButton}
+                  onPress={() => toggleDescription(item.id)}
+                >
+                  <Ionicons
+                    name={expandedCourses.includes(item.id) ? "eye-off" : "eye"}
+                    size={16}
+                    color="#2563EB"
+                  />
+                  <Text style={styles.viewButtonText}>
+                    {expandedCourses.includes(item.id) ? "Hide" : "View"}
+                  </Text>
+                </TouchableOpacity>
+
+                {expandedCourses.includes(item.id) && (
+                  <Text style={styles.description}>{item.description}</Text>
+                )}
+              </Animated.View>
+            );
+          })}
+        </ScrollView>
+      </View>
+    </>
   );
 }
+
+const styles = {
+  MainCard: {
+    padding: 20,
+    borderRadius: 25,
+    backgroundColor: "#fff",
+    elevation: 8,
+    shadowColor: "#000",
+    shadowOpacity: 0.15,
+    shadowRadius: 15,
+  },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 15,
+    padding: 15,
+    marginVertical: 8,
+    marginHorizontal: 10,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    width: "95%", // full width minus margin
+    alignSelf: "center",
+  },
+  titleRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start", // enroll button aligns to top
+    marginBottom: 8,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#111827",
+  },
+  facilitator: {
+    fontSize: 13,
+    color: "#6B7280",
+    marginTop: 2,
+  },
+  enrollButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#2563EB",
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    marginLeft: 10,
+  },
+  enrollText: { color: "#fff", fontWeight: "600", marginLeft: 4 },
+  detail: { fontSize: 13, color: "#374151", marginBottom: 3 },
+  viewButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 5,
+  },
+  viewButtonText: { color: "#2563EB", fontWeight: "600", marginLeft: 4 },
+  description: { fontSize: 14, color: "#4B5563", marginTop: 6 },
+  searchContainer: {
+    flexDirection: "row",
+    margin: 12,
+    borderRadius: 12,
+    overflow: "hidden",
+  },
+  searchInput: {
+    flex: 1,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    backgroundColor: "#E0F2FE",
+    borderTopLeftRadius: 12,
+    borderBottomLeftRadius: 12,
+    color: "#111827",
+  },
+  searchIconButton: {
+    backgroundColor: "#0F172A",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 15,
+  },
+};

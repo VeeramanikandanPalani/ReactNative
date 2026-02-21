@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   ScrollView,
   TextInput,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { Ionicons } from "@expo/vector-icons";
@@ -70,125 +72,148 @@ export default function Attendance({ navigation }) {
     );
   };
 
-  // Only show list if both Event and Status are selected
   const showList = selectedEvent !== "" && selectedStatus !== "";
 
   return (
-    <PageLayout
-      title="Attendance"
-      subtitle="Mark attendance for enrolled users"
-    >
-      <ScrollView keyboardShouldPersistTaps="handled">
-        {/* Event Dropdown */}
-        <Text style={styles.label}>Event</Text>
-        <View style={styles.inputWrapper}>
-          <Ionicons name="calendar-outline" size={20} color="#4F46E5" />
-          <Picker
-            style={{ flex: 1 }}
-            selectedValue={selectedEvent}
-            onValueChange={setSelectedEvent}
-          >
-            <Picker.Item label="-- Select Event --" value="" />
-            {events.map((e, i) => (
-              <Picker.Item key={i} label={e} value={e} />
-            ))}
-          </Picker>
-        </View>
+    <View style={{ flex: 1, backgroundColor: "#EEF2FF" }}>
+      {/* Header */}
+      <PageLayout
+        title="Attendance"
+        subtitle="Mark attendance for enrolled users"
+        image={{ uri: "https://cdn-icons-png.flaticon.com/512/190/190411.png" }}
+      />
 
-        {/* Status Dropdown */}
-        <Text style={styles.label}>Status</Text>
-        <View style={styles.inputWrapper}>
-          <Ionicons name="checkmark-circle-outline" size={20} color="#4F46E5" />
-          <Picker
-            style={{ flex: 1 }}
-            selectedValue={selectedStatus}
-            onValueChange={setSelectedStatus}
-          >
-            <Picker.Item label="-- Select Status --" value="" />
-            {statuses.map((s, i) => (
-              <Picker.Item key={i} label={s} value={s} />
-            ))}
-          </Picker>
-        </View>
-
-        {/* Show comment box if Rejected */}
-        {showList && selectedStatus === "Rejected" && (
-          <>
-            <Text style={styles.label}>Rejection Comment</Text>
-            <View
-              style={[
-                styles.inputWrapper,
-                { height: 100, alignItems: "flex-start" },
-              ]}
+      {/* Scrollable Form */}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
+        <ScrollView
+          contentContainerStyle={{ padding: 20, paddingBottom: 50 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Event Dropdown */}
+          <Text style={styles.label}>Event</Text>
+          <View style={styles.inputWrapper}>
+            <Ionicons name="calendar-outline" size={20} color="#4F46E5" />
+            <Picker
+              style={{ flex: 1 }}
+              selectedValue={selectedEvent}
+              onValueChange={setSelectedEvent}
             >
-              <TextInput
-                style={{ flex: 1, height: 90, paddingTop: 10 }}
-                multiline
-                placeholder="Enter reason for rejection"
-                value={comment}
-                onChangeText={setComment}
-              />
-            </View>
-          </>
-        )}
+              <Picker.Item label="Select Event" value="" />
+              {events.map((e, i) => (
+                <Picker.Item key={i} label={e} value={e} />
+              ))}
+            </Picker>
+          </View>
 
-        {/* Only show list when both Event & Status are selected */}
-        {showList && (
-          <>
-            {/* Check All / Uncheck All */}
-            <View style={styles.checkAllContainer}>
-              <TouchableOpacity style={styles.checkAllBtn} onPress={checkAll}>
-                <Text style={styles.checkAllText}>Check All</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.checkAllBtn} onPress={uncheckAll}>
-                <Text style={styles.checkAllText}>Uncheck All</Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* Enrolled Users List */}
-            <FlatList
-              data={enrolledUsers}
-              renderItem={renderItem}
-              keyExtractor={(item) => item.id}
-              scrollEnabled={false}
-              style={{ marginTop: 10 }}
+          {/* Status Dropdown */}
+          <Text style={styles.label}>Status</Text>
+          <View style={styles.inputWrapper}>
+            <Ionicons
+              name="checkmark-circle-outline"
+              size={20}
+              color="#4F46E5"
             />
+            <Picker
+              style={{ flex: 1 }}
+              selectedValue={selectedStatus}
+              onValueChange={setSelectedStatus}
+            >
+              <Picker.Item label="Select Status" value="" />
+              {statuses.map((s, i) => (
+                <Picker.Item key={i} label={s} value={s} />
+              ))}
+            </Picker>
+          </View>
 
-            {/* Buttons */}
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={[styles.button, { backgroundColor: "#6B7280" }]}
-                onPress={() => navigation.goBack()}
+          {/* Comment box for Rejected */}
+          {showList && selectedStatus === "Rejected" && (
+            <>
+              <Text style={styles.label}>Rejection Comment</Text>
+              <View
+                style={[
+                  styles.inputWrapper,
+                  { height: 100, alignItems: "flex-start" },
+                ]}
               >
-                <Ionicons name="arrow-back" size={18} color="#fff" />
-                <Text style={styles.btnText}>Back</Text>
-              </TouchableOpacity>
+                <TextInput
+                  style={{ flex: 1, height: 90, paddingTop: 10 }}
+                  multiline
+                  placeholder="Enter reason for rejection"
+                  value={comment}
+                  onChangeText={setComment}
+                />
+              </View>
+            </>
+          )}
 
-              <TouchableOpacity
-                style={[styles.button, { backgroundColor: "#F59E0B" }]}
-                onPress={handleReset}
-              >
-                <Ionicons name="refresh" size={18} color="#fff" />
-                <Text style={styles.btnText}>Reset</Text>
-              </TouchableOpacity>
+          {/* Check All / User List */}
+          {showList && (
+            <>
+              <View style={styles.checkAllContainer}>
+                <TouchableOpacity style={styles.checkAllBtn} onPress={checkAll}>
+                  <Text style={styles.checkAllText}>Check All</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.checkAllBtn}
+                  onPress={uncheckAll}
+                >
+                  <Text style={styles.checkAllText}>Uncheck All</Text>
+                </TouchableOpacity>
+              </View>
 
-              <TouchableOpacity
-                style={[styles.button, { backgroundColor: "#2563EB" }]}
-                onPress={handleSubmit}
-              >
-                <Ionicons name="checkmark" size={18} color="#fff" />
-                <Text style={styles.btnText}>Submit</Text>
-              </TouchableOpacity>
-            </View>
-          </>
-        )}
-      </ScrollView>
-    </PageLayout>
+              <FlatList
+                data={enrolledUsers}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.id}
+                scrollEnabled={false}
+                style={{ marginTop: 10 }}
+              />
+
+              {/* Buttons */}
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                  style={[styles.button, { backgroundColor: "#6B7280" }]}
+                  onPress={() => navigation.goBack()}
+                >
+                  <Ionicons name="arrow-back" size={18} color="#fff" />
+                  <Text style={styles.btnText}>Back</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.button, { backgroundColor: "#F59E0B" }]}
+                  onPress={handleReset}
+                >
+                  <Ionicons name="refresh" size={18} color="#fff" />
+                  <Text style={styles.btnText}>Reset</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.button, { backgroundColor: "#2563EB" }]}
+                  onPress={handleSubmit}
+                >
+                  <Ionicons name="checkmark" size={18} color="#fff" />
+                  <Text style={styles.btnText}>Submit</Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  label: { marginTop: 15, fontWeight: "600", color: "#374151" },
+  label: {
+    marginTop: 12,
+    fontWeight: "600",
+    color: "#374151",
+    fontSize: 14,
+  },
   inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
@@ -198,6 +223,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     marginTop: 6,
     backgroundColor: "#F8FAFF",
+    height: 45,
   },
   checkAllContainer: {
     flexDirection: "row",
@@ -207,34 +233,56 @@ const styles = StyleSheet.create({
   checkAllBtn: {
     backgroundColor: "#4F46E5",
     paddingVertical: 6,
-    paddingHorizontal: 15,
+    paddingHorizontal: 12,
     borderRadius: 10,
   },
-  checkAllText: { color: "#fff", fontWeight: "600" },
+  checkAllText: {
+    color: "#fff",
+    fontWeight: "600",
+    fontSize: 13,
+  },
   userRow: {
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
     borderColor: "#C7D2FE",
     borderRadius: 12,
-    padding: 10,
+    paddingHorizontal: 12,
+    height: 40,
     marginTop: 6,
     backgroundColor: "#F8FAFF",
   },
-  userText: { flex: 1, marginLeft: 10, fontWeight: "500" },
-  topicText: { flex: 1, textAlign: "right", color: "#374151" },
+  userText: {
+    flex: 1,
+    marginLeft: 10,
+    fontWeight: "500",
+    fontSize: 14,
+  },
+  topicText: {
+    flex: 1,
+    textAlign: "right",
+    color: "#374151",
+    fontSize: 14,
+  },
   buttonContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     marginTop: 20,
+    flexWrap: "wrap",
   },
   button: {
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 12,
-    marginRight: 10,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    marginLeft: 6,
+    marginTop: 5,
   },
-  btnText: { color: "#fff", fontWeight: "600", marginLeft: 5 },
+  btnText: {
+    color: "#fff",
+    fontWeight: "600",
+    marginLeft: 4,
+    fontSize: 13,
+  },
 });

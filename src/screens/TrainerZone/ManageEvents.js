@@ -70,18 +70,38 @@ export default function ManageEvents({ navigation }) {
   };
 
   return (
-    <PageLayout title="Manage Events" subtitle="View or edit event details">
-      <ScrollView keyboardShouldPersistTaps="handled">
+    <View style={{ flex: 1, backgroundColor: "#EEF2FF" }}>
+      {/* Header */}
+      <PageLayout
+        title="Manage Events"
+        subtitle="View or edit event details"
+        image={{
+          uri: "https://cdn-icons-png.flaticon.com/512/1055/1055687.png",
+        }}
+      />
+
+      {/* Main scrollable content */}
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ padding: 20, paddingBottom: 50 }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
         {/* Event Dropdown */}
         <Text style={styles.label}>Select Event</Text>
         <View style={styles.inputWrapper}>
-          <Ionicons name="calendar-outline" size={20} color="#4F46E5" />
+          <Ionicons
+            name="calendar-outline"
+            size={20}
+            color="#4F46E5"
+            style={{ marginRight: 8 }}
+          />
           <Picker
             style={{ flex: 1 }}
             selectedValue={selectedEvent}
             onValueChange={handleEventChange}
           >
-            <Picker.Item label="-- Select Event --" value="" />
+            <Picker.Item label="Select Event" value="" />
             {Object.keys(events).map((e) => (
               <Picker.Item key={e} label={e} value={e} />
             ))}
@@ -95,6 +115,7 @@ export default function ManageEvents({ navigation }) {
             name={status === "edit" ? "edit" : "visibility"}
             size={20}
             color={status === "edit" ? "#10B981" : "#6B7280"}
+            style={{ marginRight: 8 }}
           />
           <Picker
             style={{ flex: 1 }}
@@ -106,85 +127,80 @@ export default function ManageEvents({ navigation }) {
           </Picker>
         </View>
 
+        {/* Event fields */}
         {selectedEvent !== "" && (
           <>
-            <Text style={styles.label}>Start Date</Text>
-            <View style={styles.inputWrapper}>
-              <Ionicons name="time-outline" size={20} color="#4F46E5" />
-              <TextInput
-                style={styles.input}
-                value={eventData.startDate}
-                editable={status === "edit"}
-                onChangeText={(text) => handleChange("startDate", text)}
-              />
-            </View>
+            {[
+              {
+                label: "Start Date",
+                field: "startDate",
+                icon: (
+                  <Ionicons name="time-outline" size={20} color="#4F46E5" />
+                ),
+              },
+              {
+                label: "End Date",
+                field: "endDate",
+                icon: (
+                  <Ionicons name="time-outline" size={20} color="#4F46E5" />
+                ),
+              },
+              {
+                label: "Role From",
+                field: "roleFrom",
+                icon: (
+                  <Ionicons name="person-outline" size={20} color="#4F46E5" />
+                ),
+              },
+              {
+                label: "Role To",
+                field: "roleTo",
+                icon: (
+                  <Ionicons name="person-outline" size={20} color="#4F46E5" />
+                ),
+              },
+              {
+                label: "Location",
+                field: "location",
+                icon: (
+                  <Ionicons name="location-outline" size={20} color="#4F46E5" />
+                ),
+              },
+              {
+                label: "Facilitator",
+                field: "facilitator",
+                icon: (
+                  <Ionicons name="people-outline" size={20} color="#4F46E5" />
+                ),
+              },
+              {
+                label: "Topic",
+                field: "topic",
+                icon: <FontAwesome5 name="book" size={18} color="#4F46E5" />,
+              },
+              {
+                label: "Weightage",
+                field: "weightage",
+                icon: (
+                  <MaterialIcons name="assessment" size={20} color="#4F46E5" />
+                ),
+              },
+            ].map((item) => (
+              <View key={item.field}>
+                <Text style={styles.label}>{item.label}</Text>
+                <View style={styles.inputWrapper}>
+                  {React.cloneElement(item.icon, { style: { marginRight: 8 } })}
+                  <TextInput
+                    style={styles.input}
+                    value={eventData[item.field]}
+                    editable={status === "edit"}
+                    onChangeText={(text) => handleChange(item.field, text)}
+                  />
+                </View>
+              </View>
+            ))}
 
-            <Text style={styles.label}>End Date</Text>
-            <View style={styles.inputWrapper}>
-              <Ionicons name="time-outline" size={20} color="#4F46E5" />
-              <TextInput
-                style={styles.input}
-                value={eventData.endDate}
-                editable={status === "edit"}
-                onChangeText={(text) => handleChange("endDate", text)}
-              />
-            </View>
-
-            <Text style={styles.label}>Role From</Text>
-            <View style={styles.inputWrapper}>
-              <Ionicons name="person-outline" size={20} color="#4F46E5" />
-              <TextInput
-                style={styles.input}
-                value={eventData.roleFrom}
-                editable={status === "edit"}
-                onChangeText={(text) => handleChange("roleFrom", text)}
-              />
-            </View>
-
-            <Text style={styles.label}>Role To</Text>
-            <View style={styles.inputWrapper}>
-              <Ionicons name="person-outline" size={20} color="#4F46E5" />
-              <TextInput
-                style={styles.input}
-                value={eventData.roleTo}
-                editable={status === "edit"}
-                onChangeText={(text) => handleChange("roleTo", text)}
-              />
-            </View>
-
-            <Text style={styles.label}>Location</Text>
-            <View style={styles.inputWrapper}>
-              <Ionicons name="location-outline" size={20} color="#4F46E5" />
-              <TextInput
-                style={styles.input}
-                value={eventData.location}
-                editable={status === "edit"}
-                onChangeText={(text) => handleChange("location", text)}
-              />
-            </View>
-
-            <Text style={styles.label}>Facilitator</Text>
-            <View style={styles.inputWrapper}>
-              <Ionicons name="people-outline" size={20} color="#4F46E5" />
-              <TextInput
-                style={styles.input}
-                value={eventData.facilitator}
-                editable={status === "edit"}
-                onChangeText={(text) => handleChange("facilitator", text)}
-              />
-            </View>
-
-            <Text style={styles.label}>Topic</Text>
-            <View style={styles.inputWrapper}>
-              <FontAwesome5 name="book" size={18} color="#4F46E5" />
-              <TextInput
-                style={styles.input}
-                value={eventData.topic}
-                editable={status === "edit"}
-                onChangeText={(text) => handleChange("topic", text)}
-              />
-            </View>
-
+            {/* Brief (multiline) */}
             <Text style={styles.label}>Brief</Text>
             <View
               style={[
@@ -196,25 +212,14 @@ export default function ManageEvents({ navigation }) {
                 name="align-left"
                 size={18}
                 color="#4F46E5"
-                style={{ marginTop: 12 }}
+                style={{ marginTop: 12, marginRight: 8 }}
               />
               <TextInput
-                style={{ flex: 1, height: 70 }}
+                style={{ flex: 1, height: 70, textAlignVertical: "top" }}
                 value={eventData.brief}
                 editable={status === "edit"}
                 multiline
                 onChangeText={(text) => handleChange("brief", text)}
-              />
-            </View>
-
-            <Text style={styles.label}>Weightage</Text>
-            <View style={styles.inputWrapper}>
-              <MaterialIcons name="assessment" size={20} color="#4F46E5" />
-              <TextInput
-                style={styles.input}
-                value={eventData.weightage}
-                editable={status === "edit"}
-                onChangeText={(text) => handleChange("weightage", text)}
               />
             </View>
           </>
@@ -247,12 +252,16 @@ export default function ManageEvents({ navigation }) {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </PageLayout>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  label: { marginTop: 15, fontWeight: "600", color: "#374151" },
+  label: {
+    marginTop: 15,
+    fontWeight: "600",
+    color: "#374151",
+  },
   inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
@@ -262,20 +271,32 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     marginTop: 6,
     backgroundColor: "#F8FAFF",
+    height: 40,
   },
-  input: { flex: 1, paddingVertical: 10 },
+  input: {
+    flex: 1,
+    paddingVertical: 0,
+    fontSize: 14,
+  },
   buttonContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     marginTop: 20,
+    flexWrap: "wrap",
   },
   button: {
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 12,
-    marginRight: 10,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    marginLeft: 4,
+    marginTop: 5,
   },
-  btnText: { color: "#fff", fontWeight: "600", marginLeft: 5 },
+  btnText: {
+    color: "#fff",
+    fontWeight: "600",
+    marginLeft: 4,
+    fontSize: 13,
+  },
 });

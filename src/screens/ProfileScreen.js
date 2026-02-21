@@ -7,9 +7,12 @@ import {
   Image,
   TouchableOpacity,
   TextInput,
-  StatusBar,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import ProfileLayout from "../components/ProfileLayout";
 
 const USER_PROFILE = {
   name: "Dr. John Doe",
@@ -25,7 +28,7 @@ const USER_POSTS = [
     title: "Completed Infection Control Course",
     message: "🎉 I just completed the Infection Control course!",
     image:
-      "https://images.unsplash.com/photo-1596496055392-2dfe5e2a3127?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
     likes: 5,
     comments: ["Congrats!", "Well done!"],
   },
@@ -39,7 +42,7 @@ const USER_POSTS = [
   },
 ];
 
-const ProfileScreen = () => {
+export default function ProfileScreen() {
   const [posts, setPosts] = useState(USER_POSTS);
   const [commentText, setCommentText] = useState({});
   const [showComments, setShowComments] = useState({});
@@ -80,7 +83,6 @@ const ProfileScreen = () => {
           <Image source={{ uri: item.image }} style={styles.postImage} />
         )}
 
-        {/* Like & Comment Row */}
         <View style={styles.actionRow}>
           <TouchableOpacity
             onPress={() => handleLike(item.id)}
@@ -88,7 +90,6 @@ const ProfileScreen = () => {
           >
             <Text style={styles.likeText}>❤️ {item.likes} Likes</Text>
           </TouchableOpacity>
-
           {item.comments.length > 0 && (
             <TouchableOpacity
               onPress={() => toggleComments(item.id)}
@@ -101,19 +102,17 @@ const ProfileScreen = () => {
           )}
         </View>
 
-        {/* Comments Section */}
         {commentsVisible &&
-          item.comments.map((comment, index) => (
-            <Text key={index} style={styles.comment}>
+          item.comments.map((comment, idx) => (
+            <Text key={idx} style={styles.comment}>
               💬 {comment}
             </Text>
           ))}
 
-        {/* Add Comment Input */}
         <View style={styles.inputRow}>
           <TextInput
-            placeholder="Add comment..."
             style={styles.input}
+            placeholder="Add comment..."
             value={commentText[item.id] || ""}
             onChangeText={(text) =>
               setCommentText({ ...commentText, [item.id]: text })
@@ -128,60 +127,53 @@ const ProfileScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="light-content" backgroundColor="#264653" />
-
-      {/* Top Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Profile</Text>
-      </View>
-
-      {/* Profile Info */}
-      <View style={styles.profileContainer}>
-        <Image source={{ uri: USER_PROFILE.avatar }} style={styles.avatar} />
-        <View style={styles.profileDetails}>
-          <Text style={styles.profileName}>{USER_PROFILE.name}</Text>
-          <Text style={styles.profileDesignation}>
-            {USER_PROFILE.designation}
-          </Text>
-          <Text style={styles.profileTrainings}>
-            🏆 Completed Trainings: {USER_PROFILE.completedTrainings}
-          </Text>
-        </View>
-      </View>
-
-      {/* User Posts */}
-      <FlatList
-        data={posts}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 20, paddingTop: 10 }}
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#EEF2FF" }}>
+      {/* Page Header */}
+      <ProfileLayout
+        title="Profile"
+        subtitle=""
+        image={{
+          uri: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+        }}
       />
+
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
+        <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
+          {/* Profile Info */}
+          <View style={styles.profileContainer}>
+            <Image
+              source={{ uri: USER_PROFILE.avatar }}
+              style={styles.avatar}
+            />
+            <View style={styles.profileDetails}>
+              <Text style={styles.profileName}>{USER_PROFILE.name}</Text>
+              <Text style={styles.profileDesignation}>
+                {USER_PROFILE.designation}
+              </Text>
+              <Text style={styles.profileTrainings}>
+                🏆 Completed Trainings: {USER_PROFILE.completedTrainings}
+              </Text>
+            </View>
+          </View>
+
+          {/* User Posts */}
+          <FlatList
+            data={posts}
+            keyExtractor={(item) => item.id}
+            renderItem={renderItem}
+            scrollEnabled={false}
+            contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 10 }}
+          />
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
-};
-
-export default ProfileScreen;
+}
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#EAF6F9",
-  },
-
-  header: {
-    backgroundColor: "#264653",
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-  },
-
-  headerTitle: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#fff",
-  },
-
   profileContainer: {
     flexDirection: "row",
     backgroundColor: "#fff",
@@ -195,112 +187,94 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
-
   avatar: {
     width: 70,
     height: 70,
     borderRadius: 35,
     backgroundColor: "#2A9D8F",
   },
-
   profileDetails: {
     marginLeft: 12,
   },
-
   profileName: {
     fontSize: 18,
     fontWeight: "bold",
     color: "#1D3557",
     marginBottom: 2,
   },
-
   profileDesignation: {
     fontSize: 14,
     color: "#6c757d",
     marginBottom: 2,
   },
-
   profileTrainings: {
     fontSize: 13,
     color: "#2A9D8F",
   },
-
   card: {
     backgroundColor: "#fff",
-    borderRadius: 14,
+    borderRadius: 12,
     padding: 15,
-    marginHorizontal: 16,
     marginBottom: 14,
-    elevation: 3,
+    elevation: 2,
   },
-
   postTitle: {
     fontSize: 15,
     fontWeight: "bold",
     marginBottom: 4,
     color: "#1D3557",
   },
-
   postMessage: {
     fontSize: 14,
     marginBottom: 8,
     lineHeight: 20,
     color: "#264653",
   },
-
   postImage: {
     width: "100%",
     height: 180,
-    borderRadius: 10,
+    borderRadius: 12,
     marginBottom: 8,
   },
-
   actionRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 6,
   },
-
-  actionBtn: {},
-
   likeText: {
     fontSize: 14,
     fontWeight: "600",
     color: "#E63946",
   },
-
   commentText: {
     fontSize: 13,
     fontWeight: "bold",
     color: "#2A9D8F",
   },
-
   comment: {
     fontSize: 13,
     marginBottom: 3,
     color: "#444",
   },
-
   inputRow: {
     flexDirection: "row",
     alignItems: "center",
     marginTop: 6,
   },
-
   input: {
     flex: 1,
     borderWidth: 1,
-    borderColor: "#cfd8dc",
-    borderRadius: 20,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    borderColor: "#C7D2FE",
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     fontSize: 13,
-    backgroundColor: "#F8FBFC",
+    backgroundColor: "#F8FAFF",
   },
-
   postBtn: {
     marginLeft: 10,
-    fontWeight: "bold",
-    color: "#2A9D8F",
+    fontWeight: "600",
+    color: "#2563EB",
+    fontSize: 13,
   },
 });

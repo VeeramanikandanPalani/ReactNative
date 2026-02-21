@@ -15,6 +15,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Modal from "react-native-modal";
 import ImageViewer from "react-native-image-zoom-viewer";
 import VideoPlayer from "react-native-video-controls";
+import { LinearGradient } from "expo-linear-gradient";
 
 const { width } = Dimensions.get("window");
 
@@ -194,29 +195,39 @@ const FeedsScreen = () => {
       <StatusBar barStyle="light-content" backgroundColor="#2A9D8F" />
 
       {/* Header */}
-      <View style={styles.topHeader}>
+      {/* Header */}
+      <LinearGradient
+        colors={["#0F4C75", "#3282B8", "#BBE1FA"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.topHeader}
+      >
         <View style={styles.headerRow}>
           <View style={styles.GHeader}>
+            <View style={styles.iconCircle}>
+              <Icon name="medical-bag" size={26} color="#fff" />
+            </View>
+
             <Text style={styles.pageTitle}>Gurucool Feeds</Text>
-            <Icon
-              name="sunglasses"
-              size={32}
-              color="#faf7cd"
-              style={{ marginLeft: 8 }}
-            />
           </View>
-          <Text style={styles.usernameText}> {USER.name}</Text>
+
+          <View style={styles.userBadge}>
+            <Text style={styles.usernameText}>{USER.name}</Text>
+          </View>
         </View>
 
-        {/* Search Bar */}
-        <TextInput
-          placeholder="Search by title or author..."
-          placeholderTextColor="#999"
-          style={styles.searchInput}
-          value={searchText}
-          onChangeText={setSearchText}
-        />
-      </View>
+        {/* Highlighted Search Bar */}
+        <View style={styles.searchWrapper}>
+          <Icon name="magnify" size={20} color="#0F4C75" />
+          <TextInput
+            placeholder="Search by title or author..."
+            placeholderTextColor="#5f6f7a"
+            style={styles.searchInput}
+            value={searchText}
+            onChangeText={setSearchText}
+          />
+        </View>
+      </LinearGradient>
 
       {/* Feed List */}
       <FlatList
@@ -260,36 +271,75 @@ const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: "#EAF6F9" },
 
   topHeader: {
-    backgroundColor: "#2a739d", // Healthcare teal
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    paddingTop: 20,
+    paddingBottom: 25,
+    paddingHorizontal: 18,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    elevation: 10,
   },
+
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 12,
+    marginBottom: 18,
   },
+
   GHeader: {
     flexDirection: "row",
+    alignItems: "center",
   },
-  pageTitle: { color: "#fff", fontSize: 22, fontWeight: "bold" },
-  usernameText: {
+
+  iconCircle: {
+    backgroundColor: "#1B262C",
+    padding: 10,
+    borderRadius: 50,
+    marginRight: 10,
+    elevation: 6,
+  },
+
+  pageTitle: {
     color: "#fff",
-    fontSize: 16,
-    marginLeft: 6,
-    fontWeight: "500",
+    fontSize: 24,
+    fontWeight: "900",
+    letterSpacing: 1,
   },
-  searchInput: {
-    backgroundColor: "#EAF6F9",
-    borderRadius: 20,
+
+  userBadge: {
+    backgroundColor: "#ffffff30",
     paddingHorizontal: 12,
     paddingVertical: 6,
-    fontSize: 14,
-    borderWidth: 1,
-    borderColor: "#cfd8dc",
+    borderRadius: 20,
+  },
+
+  usernameText: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "bold",
+  },
+
+  /* Highlighted Search */
+  searchWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#ffffff",
+    borderRadius: 30,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 6,
+  },
+
+  searchInput: {
+    flex: 1,
+    marginLeft: 8,
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#0F4C75",
   },
 
   cardWrapper: {

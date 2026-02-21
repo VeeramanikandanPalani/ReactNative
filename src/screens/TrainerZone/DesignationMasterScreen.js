@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   TextInput,
+  StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Image,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
+import PageLayout from "../../components/PageLayout";
 
 export default function DesignationMaster({ navigation }) {
   const [designationCode, setDesignationCode] = useState("");
@@ -19,7 +21,6 @@ export default function DesignationMaster({ navigation }) {
       alert("Please fill all fields");
       return;
     }
-
     alert("Designation Saved Successfully!");
   };
 
@@ -29,32 +30,29 @@ export default function DesignationMaster({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        {/* ===== TOP IMAGE SECTION ===== */}
-        <View style={styles.headerSection}>
-          <Image
-            source={{
-              uri: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            }}
-            style={styles.headerImage}
-          />
-          <Text style={styles.headerTitle}>Designation Master</Text>
-          <Text style={styles.headerSubtitle}>
-            Create and manage designations
-          </Text>
-        </View>
+    <View style={{ flex: 1, backgroundColor: "#EEF2FF" }}>
+      {/* Header */}
+      <PageLayout
+        title="Designation Master"
+        subtitle="Create and manage designations"
+        image={{
+          uri: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+        }}
+      />
 
-        {/* ===== FORM CARD ===== */}
-        <View style={styles.card}>
+      {/* Scrollable Form */}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
+        <ScrollView
+          contentContainerStyle={{ padding: 20, paddingBottom: 50 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Designation Code */}
           <Text style={styles.label}>Designation Code</Text>
           <View style={styles.inputWrapper}>
-            <Ionicons
-              name="code-outline"
-              size={20}
-              color="#4F46E5"
-              style={styles.icon}
-            />
             <TextInput
               style={styles.input}
               placeholder="Enter Designation Code"
@@ -63,14 +61,9 @@ export default function DesignationMaster({ navigation }) {
             />
           </View>
 
+          {/* Designation Name */}
           <Text style={styles.label}>Designation Name</Text>
           <View style={styles.inputWrapper}>
-            <MaterialIcons
-              name="badge"
-              size={20}
-              color="#4F46E5"
-              style={styles.icon}
-            />
             <TextInput
               style={styles.input}
               placeholder="Enter Designation Name"
@@ -78,93 +71,46 @@ export default function DesignationMaster({ navigation }) {
               onChangeText={setDesignationName}
             />
           </View>
-        </View>
-      </ScrollView>
 
-      {/* ===== BUTTONS ===== */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[styles.button, { backgroundColor: "#6B7280" }]}
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="arrow-back" size={18} color="#fff" />
-          <Text style={styles.btnText}>Back</Text>
-        </TouchableOpacity>
+          {/* Buttons */}
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={[styles.button, { backgroundColor: "#6B7280" }]}
+              onPress={() => navigation.goBack()}
+            >
+              <Ionicons name="arrow-back" size={18} color="#fff" />
+              <Text style={styles.btnText}>Back</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[styles.button, { backgroundColor: "#F59E0B" }]}
-          onPress={handleReset}
-        >
-          <Ionicons name="refresh" size={18} color="#fff" />
-          <Text style={styles.btnText}>Reset</Text>
-        </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.button, { backgroundColor: "#F59E0B" }]}
+              onPress={handleReset}
+            >
+              <Ionicons name="refresh" size={18} color="#fff" />
+              <Text style={styles.btnText}>Reset</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[styles.button, { backgroundColor: "#2563EB" }]}
-          onPress={handleSubmit}
-        >
-          <Ionicons name="checkmark" size={18} color="#fff" />
-          <Text style={styles.btnText}>Submit</Text>
-        </TouchableOpacity>
-      </View>
+            <TouchableOpacity
+              style={[styles.button, { backgroundColor: "#2563EB" }]}
+              onPress={handleSubmit}
+            >
+              <Ionicons name="checkmark" size={18} color="#fff" />
+              <Text style={styles.btnText}>Submit</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#EEF2FF",
-  },
-
-  /* ===== HEADER SECTION ===== */
-  headerSection: {
-    backgroundColor: "#4F46E5",
-    paddingTop: 60,
-    paddingBottom: 80,
-    alignItems: "center",
-    borderBottomLeftRadius: 40,
-    borderBottomRightRadius: 40,
-  },
-
-  headerImage: {
-    width: 80,
-    height: 80,
-    marginBottom: 15,
-  },
-
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#fff",
-  },
-
-  headerSubtitle: {
-    fontSize: 14,
-    color: "#E0E7FF",
-    marginTop: 5,
-  },
-
-  /* ===== CARD ===== */
-  card: {
-    backgroundColor: "#FFFFFF",
-    marginHorizontal: 20,
-    marginTop: -50,
-    padding: 25,
-    borderRadius: 25,
-    elevation: 8,
-    shadowColor: "#000",
-    shadowOpacity: 0.15,
-    shadowRadius: 15,
-  },
-
   label: {
-    fontSize: 14,
+    marginTop: 12,
     fontWeight: "600",
-    marginTop: 15,
     color: "#374151",
+    fontSize: 14,
   },
-
   inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
@@ -174,37 +120,32 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     marginTop: 6,
     backgroundColor: "#F8FAFF",
+    height: 40,
   },
-
-  icon: {
-    marginRight: 8,
-  },
-
   input: {
     flex: 1,
-    paddingVertical: 10,
+    paddingVertical: 0,
+    fontSize: 14,
   },
-
-  /* ===== BUTTONS ===== */
   buttonContainer: {
-    position: "absolute",
-    bottom: 20,
-    right: 20,
     flexDirection: "row",
+    justifyContent: "flex-end",
+    marginTop: 20,
+    flexWrap: "wrap",
   },
-
   button: {
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 12,
-    marginLeft: 10,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    marginLeft: 6,
+    marginTop: 5,
   },
-
   btnText: {
     color: "#fff",
     fontWeight: "600",
-    marginLeft: 5,
+    marginLeft: 4,
+    fontSize: 13,
   },
 });
