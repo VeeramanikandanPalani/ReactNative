@@ -4,126 +4,127 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  FlatList,
-  StatusBar,
+  ScrollView,
   Dimensions,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
+import ProfileLayout from "../components/ProfileLayout";
 
 const { width } = Dimensions.get("window");
-const TILE_WIDTH = (width - 16 * 3) / 2; // 2 tiles per row with 16px padding
+const TILE_WIDTH = (width - 20 * 3) / 2;
 
-// Menu items with corresponding screen names
 const MENU_ITEMS = [
   {
     id: "1",
     title: "Manage Events",
-    icon: <Ionicons name="calendar-outline" size={32} color="#fff" />,
+    icon: <Ionicons name="calendar-outline" size={28} color="#fff" />,
     bgColor: "#2A9D8F",
     screen: "ManageEventsScreen",
   },
   {
     id: "2",
     title: "Manage Users",
-    icon: <MaterialIcons name="people-outline" size={32} color="#fff" />,
+    icon: <MaterialIcons name="people-outline" size={28} color="#fff" />,
     bgColor: "#E76F51",
     screen: "ManageUsersScreen",
   },
   {
     id: "3",
     title: "Nomination",
-    icon: <FontAwesome5 name="user-check" size={32} color="#fff" />,
+    icon: <FontAwesome5 name="user-check" size={26} color="#fff" />,
     bgColor: "#264653",
     screen: "NominationScreen",
   },
   {
     id: "4",
     title: "Designation Master",
-    icon: <Ionicons name="business-outline" size={32} color="#fff" />,
+    icon: <Ionicons name="business-outline" size={28} color="#fff" />,
     bgColor: "#F4A261",
     screen: "DesignationMasterScreen",
   },
   {
     id: "5",
     title: "Attendance",
-    icon: <Ionicons name="checkbox-outline" size={32} color="#fff" />,
+    icon: <Ionicons name="checkbox-outline" size={28} color="#fff" />,
     bgColor: "#8AB17D",
     screen: "AttendanceScreen",
   },
   {
     id: "6",
     title: "Make Post",
-    icon: <Ionicons name="create-outline" size={32} color="#fff" />,
+    icon: <Ionicons name="create-outline" size={28} color="#fff" />,
     bgColor: "#FF6B6B",
     screen: "MakePostScreen",
   },
 ];
 
-const MyZoneScreen = ({ navigation }) => {
-  const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={[styles.tile, { backgroundColor: item.bgColor }]}
-      onPress={() => navigation.navigate(item.screen)}
-      activeOpacity={0.8}
-    >
-      {item.icon}
-      <Text style={styles.tileText}>{item.title}</Text>
-    </TouchableOpacity>
-  );
-
+export default function MyZoneScreen({ navigation }) {
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="light-content" backgroundColor="#2A9D8F" />
-      <Text style={styles.pageTitle}>My Zone</Text>
-
-      <FlatList
-        data={MENU_ITEMS}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        numColumns={2}
-        contentContainerStyle={styles.listContainer}
-        columnWrapperStyle={{ justifyContent: "center", marginBottom: 16 }}
-        showsVerticalScrollIndicator={false}
+    <View style={styles.container}>
+      {/* Header */}
+      <ProfileLayout
+        title="Trainer Zone"
+        subtitle="Manage your admin activities"
+        image={{
+          uri: "https://img.icons8.com/color/48/000000/worker-male.png",
+        }}
       />
-    </SafeAreaView>
-  );
-};
 
-export default MyZoneScreen;
+      {/* Content Below Header */}
+      <ScrollView
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.grid}>
+          {MENU_ITEMS.map((item) => (
+            <TouchableOpacity
+              key={item.id}
+              style={[styles.tile, { backgroundColor: item.bgColor }]}
+              activeOpacity={0.85}
+              onPress={() => navigation.navigate(item.screen)}
+            >
+              {item.icon}
+              <Text style={styles.tileText}>{item.title}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ScrollView>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
-  safeArea: {
+  container: {
     flex: 1,
     backgroundColor: "#EAF6F9",
   },
-  pageTitle: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#1D3557",
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    marginBottom: 20,
-    textAlign: "center",
+
+  contentContainer: {
+    padding: 20,
+    paddingTop: 30,
+    paddingBottom: 40,
   },
-  listContainer: {
-    paddingHorizontal: 16,
-    alignItems: "center",
-    paddingBottom: 20,
+
+  grid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
   },
+
   tile: {
     width: TILE_WIDTH,
     height: 120,
-    borderRadius: 12,
+    borderRadius: 14,
     justifyContent: "center",
     alignItems: "center",
-    marginHorizontal: 8,
+    marginBottom: 16,
     shadowColor: "#000",
     shadowOpacity: 0.15,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 6,
+    elevation: 5,
   },
+
   tileText: {
     color: "#fff",
     fontSize: 14,

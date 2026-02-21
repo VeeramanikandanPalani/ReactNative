@@ -12,6 +12,7 @@ import {
 import { Picker } from "@react-native-picker/picker";
 import { Ionicons } from "@expo/vector-icons";
 import PageLayout from "../../components/PageLayout";
+import ContentCard from "../../components/ContentCard";
 
 export default function ManageUsers({ navigation }) {
   const [selectedEvent, setSelectedEvent] = useState("");
@@ -46,83 +47,86 @@ export default function ManageUsers({ navigation }) {
           showsVerticalScrollIndicator={false}
         >
           {/* Event Dropdown */}
-          <Text style={styles.label}>Event</Text>
-          <View style={styles.inputWrapper}>
-            <Picker
-              style={{ flex: 1 }}
-              selectedValue={selectedEvent}
-              onValueChange={setSelectedEvent}
-            >
-              <Picker.Item label="Select Event" value="" />
-              {events.map((e, i) => (
-                <Picker.Item key={i} label={e} value={e} />
-              ))}
-            </Picker>
-          </View>
 
-          {/* Status Dropdown */}
-          <Text style={styles.label}>Status</Text>
-          <View style={styles.inputWrapper}>
-            <Picker
-              style={{ flex: 1 }}
-              selectedValue={status}
-              onValueChange={setStatus}
-            >
-              <Picker.Item label="Select Status" value="" />
-              {statuses.map((s, i) => (
-                <Picker.Item key={i} label={s} value={s} />
-              ))}
-            </Picker>
-          </View>
+          <ContentCard>
+            <Text style={styles.label}>Event</Text>
+            <View style={styles.inputWrapper}>
+              <Picker
+                style={{ flex: 1 }}
+                selectedValue={selectedEvent}
+                onValueChange={setSelectedEvent}
+              >
+                <Picker.Item label="Select Event" value="" />
+                {events.map((e, i) => (
+                  <Picker.Item key={i} label={e} value={e} />
+                ))}
+              </Picker>
+            </View>
 
-          {/* User IDs */}
-          <Text style={styles.label}>User IDs</Text>
-          <View
-            style={[
-              styles.inputWrapper,
-              { height: 100, alignItems: "flex-start" },
-            ]}
-          >
-            <TextInput
-              style={{
-                flex: 1,
-                height: 90,
-                fontSize: 14,
-                textAlignVertical: "top",
-              }}
-              multiline
-              placeholder="Enter multiple User IDs"
-              value={userIds}
-              onChangeText={setUserIds}
-            />
-          </View>
+            {/* Status Dropdown */}
+            <Text style={styles.label}>Status</Text>
+            <View style={styles.inputWrapper}>
+              <Picker
+                style={{ flex: 1 }}
+                selectedValue={status}
+                onValueChange={setStatus}
+              >
+                <Picker.Item label="Select Status" value="" />
+                {statuses.map((s, i) => (
+                  <Picker.Item key={i} label={s} value={s} />
+                ))}
+              </Picker>
+            </View>
 
-          {/* Buttons */}
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={[styles.button, { backgroundColor: "#6B7280" }]}
-              onPress={() => navigation.goBack()}
+            {/* User IDs */}
+            <Text style={styles.label}>User IDs</Text>
+            <View
+              style={[
+                styles.inputWrapper,
+                { height: 100, alignItems: "flex-start" },
+              ]}
             >
-              <Ionicons name="arrow-back" size={18} color="#fff" />
-              <Text style={styles.btnText}>Back</Text>
-            </TouchableOpacity>
+              <TextInput
+                style={{
+                  flex: 1,
+                  height: 90,
+                  fontSize: 14,
+                  textAlignVertical: "top",
+                }}
+                multiline
+                placeholder="Enter multiple User IDs"
+                value={userIds}
+                onChangeText={setUserIds}
+              />
+            </View>
 
-            <TouchableOpacity
-              style={[styles.button, { backgroundColor: "#F59E0B" }]}
-              onPress={handleReset}
-            >
-              <Ionicons name="refresh" size={18} color="#fff" />
-              <Text style={styles.btnText}>Reset</Text>
-            </TouchableOpacity>
+            {/* Buttons */}
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={[styles.button, { backgroundColor: "#6B7280" }]}
+                onPress={() => navigation.goBack()}
+              >
+                <Ionicons name="arrow-back" size={18} color="#fff" />
+                <Text style={styles.btnText}>Back</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.button, { backgroundColor: "#2563EB" }]}
-              onPress={handleSubmit}
-            >
-              <Ionicons name="checkmark" size={18} color="#fff" />
-              <Text style={styles.btnText}>Submit</Text>
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity
+                style={[styles.button, { backgroundColor: "#F59E0B" }]}
+                onPress={handleReset}
+              >
+                <Ionicons name="refresh" size={18} color="#fff" />
+                <Text style={styles.btnText}>Reset</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.button, { backgroundColor: "#2563EB" }]}
+                onPress={handleSubmit}
+              >
+                <Ionicons name="checkmark" size={18} color="#fff" />
+                <Text style={styles.btnText}>Submit</Text>
+              </TouchableOpacity>
+            </View>
+          </ContentCard>
         </ScrollView>
       </KeyboardAvoidingView>
     </View>

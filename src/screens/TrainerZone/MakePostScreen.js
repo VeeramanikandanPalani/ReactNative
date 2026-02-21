@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import PageLayout from "../../components/PageLayout";
+import ContentCard from "../../components/ContentCard";
 
 export default function MakePostScreen({ navigation }) {
   const [title, setTitle] = useState("");
@@ -59,72 +60,74 @@ export default function MakePostScreen({ navigation }) {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          {/* Title */}
-          <Text style={styles.label}>Title</Text>
-          <View style={styles.inputWrapper}>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter post title"
-              value={title}
-              onChangeText={setTitle}
-            />
-          </View>
+          <ContentCard>
+            {/* Title */}
+            <Text style={styles.label}>Title</Text>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter post title"
+                value={title}
+                onChangeText={setTitle}
+              />
+            </View>
 
-          {/* Content */}
-          <Text style={styles.label}>Content</Text>
-          <View
-            style={[
-              styles.inputWrapper,
-              { height: 120, alignItems: "flex-start" },
-            ]}
-          >
-            <TextInput
-              style={[styles.input, { height: 110 }]}
-              placeholder="Write your post content here"
-              multiline
-              value={content}
-              onChangeText={setContent}
-            />
-          </View>
-
-          {/* Attachment */}
-          <Text style={styles.label}>Attachment</Text>
-          <TouchableOpacity
-            style={styles.attachmentBtn}
-            onPress={handleAttachment}
-          >
-            <Ionicons name="attach-outline" size={20} color="#fff" />
-            <Text style={styles.attachmentText}>
-              {attachment ? attachment : "Add Attachment"}
-            </Text>
-          </TouchableOpacity>
-
-          {/* Action Buttons */}
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={[styles.button, { backgroundColor: "#6B7280" }]}
-              onPress={() => navigation.goBack()}
+            {/* Content */}
+            <Text style={styles.label}>Content</Text>
+            <View
+              style={[
+                styles.inputWrapper,
+                { height: 120, alignItems: "flex-start" },
+              ]}
             >
-              <Ionicons name="arrow-back" size={16} color="#fff" />
-              <Text style={styles.btnText}>Back</Text>
+              <TextInput
+                style={[styles.input, { height: 110 }]}
+                placeholder="Write your post content here"
+                multiline
+                value={content}
+                onChangeText={setContent}
+              />
+            </View>
+
+            {/* Attachment */}
+            <Text style={styles.label}>Attachment</Text>
+            <TouchableOpacity
+              style={styles.attachmentBtn}
+              onPress={handleAttachment}
+            >
+              <Ionicons name="attach-outline" size={20} color="#fff" />
+              <Text style={styles.attachmentText}>
+                {attachment ? attachment : "Add Attachment"}
+              </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.button, { backgroundColor: "#F59E0B" }]}
-              onPress={handleReset}
-            >
-              <Ionicons name="refresh" size={16} color="#fff" />
-              <Text style={styles.btnText}>Reset</Text>
-            </TouchableOpacity>
+            {/* Action Buttons */}
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={[styles.button, { backgroundColor: "#6B7280" }]}
+                onPress={() => navigation.goBack()}
+              >
+                <Ionicons name="arrow-back" size={16} color="#fff" />
+                <Text style={styles.btnText}>Back</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.button, { backgroundColor: "#2563EB" }]}
-              onPress={handleSubmit}
-            >
-              <Ionicons name="checkmark" size={16} color="#fff" />
-              <Text style={styles.btnText}>Submit</Text>
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity
+                style={[styles.button, { backgroundColor: "#F59E0B" }]}
+                onPress={handleReset}
+              >
+                <Ionicons name="refresh" size={16} color="#fff" />
+                <Text style={styles.btnText}>Reset</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.button, { backgroundColor: "#2563EB" }]}
+                onPress={handleSubmit}
+              >
+                <Ionicons name="checkmark" size={16} color="#fff" />
+                <Text style={styles.btnText}>Submit</Text>
+              </TouchableOpacity>
+            </View>
+          </ContentCard>
         </ScrollView>
       </KeyboardAvoidingView>
     </View>

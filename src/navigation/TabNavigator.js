@@ -22,7 +22,7 @@ export default function TabNavigator() {
 
           if (route.name === "Courses") {
             iconName = "book-outline";
-          } else if (route.name === "MyZone") {
+          } else if (route.name === "TrainerZone") {
             iconName = "grid-outline";
           } else if (route.name === "Profile") {
             iconName = "person-outline";
@@ -36,7 +36,7 @@ export default function TabNavigator() {
       })}
     >
       <Tab.Screen name="Feeds" component={Feeds} />
-      <Tab.Screen name="MyZone" component={MyZoneStack} />
+      <Tab.Screen name="TrainerZone" component={MyZoneStack} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
       <Tab.Screen name="Courses" component={CourseListScreen} />
     </Tab.Navigator>

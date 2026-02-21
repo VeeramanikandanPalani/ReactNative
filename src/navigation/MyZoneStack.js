@@ -13,21 +13,17 @@ const Stack = createNativeStackNavigator();
 
 export default function MyZoneStack() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: true }}>
-      <Stack.Screen
-        name="MyZoneHome"
-        component={MyZoneScreen}
-        options={{ title: "My Zone" }}
-      />
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="MyZoneHome" component={MyZoneScreen} />
       <Stack.Screen
         name="ManageEventsScreen"
         component={ManageEvents}
-        options={{ title: "Manage Events" }}
+        options={{ title: "" }}
       />
       <Stack.Screen
         name="ManageUsersScreen"
         component={ManageUsers}
-        options={{ title: "Manage Users" }}
+        options={{ title: "" }}
       />
       <Stack.Screen
         name="NominationScreen"

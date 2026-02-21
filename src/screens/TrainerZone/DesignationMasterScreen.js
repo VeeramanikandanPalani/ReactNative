@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import PageLayout from "../../components/PageLayout";
+import ContentCard from "../../components/ContentCard";
 
 export default function DesignationMaster({ navigation }) {
   const [designationCode, setDesignationCode] = useState("");
@@ -50,54 +51,56 @@ export default function DesignationMaster({ navigation }) {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          {/* Designation Code */}
-          <Text style={styles.label}>Designation Code</Text>
-          <View style={styles.inputWrapper}>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter Designation Code"
-              value={designationCode}
-              onChangeText={setDesignationCode}
-            />
-          </View>
+          <ContentCard>
+            {/* Designation Code */}
+            <Text style={styles.label}>Designation Code</Text>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter Designation Code"
+                value={designationCode}
+                onChangeText={setDesignationCode}
+              />
+            </View>
 
-          {/* Designation Name */}
-          <Text style={styles.label}>Designation Name</Text>
-          <View style={styles.inputWrapper}>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter Designation Name"
-              value={designationName}
-              onChangeText={setDesignationName}
-            />
-          </View>
+            {/* Designation Name */}
+            <Text style={styles.label}>Designation Name</Text>
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter Designation Name"
+                value={designationName}
+                onChangeText={setDesignationName}
+              />
+            </View>
 
-          {/* Buttons */}
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={[styles.button, { backgroundColor: "#6B7280" }]}
-              onPress={() => navigation.goBack()}
-            >
-              <Ionicons name="arrow-back" size={18} color="#fff" />
-              <Text style={styles.btnText}>Back</Text>
-            </TouchableOpacity>
+            {/* Buttons */}
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={[styles.button, { backgroundColor: "#6B7280" }]}
+                onPress={() => navigation.goBack()}
+              >
+                <Ionicons name="arrow-back" size={18} color="#fff" />
+                <Text style={styles.btnText}>Back</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.button, { backgroundColor: "#F59E0B" }]}
-              onPress={handleReset}
-            >
-              <Ionicons name="refresh" size={18} color="#fff" />
-              <Text style={styles.btnText}>Reset</Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button, { backgroundColor: "#F59E0B" }]}
+                onPress={handleReset}
+              >
+                <Ionicons name="refresh" size={18} color="#fff" />
+                <Text style={styles.btnText}>Reset</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.button, { backgroundColor: "#2563EB" }]}
-              onPress={handleSubmit}
-            >
-              <Ionicons name="checkmark" size={18} color="#fff" />
-              <Text style={styles.btnText}>Submit</Text>
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity
+                style={[styles.button, { backgroundColor: "#2563EB" }]}
+                onPress={handleSubmit}
+              >
+                <Ionicons name="checkmark" size={18} color="#fff" />
+                <Text style={styles.btnText}>Submit</Text>
+              </TouchableOpacity>
+            </View>
+          </ContentCard>
         </ScrollView>
       </KeyboardAvoidingView>
     </View>

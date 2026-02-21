@@ -1,11 +1,16 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, StatusBar } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import RotatingSettingsIcon from "./RotatingSettingsIcon ";
 
-export default function ProfileLayout({ title, subtitle, children, image }) {
+export default function ProfileLayout({ title, subtitle, image }) {
   return (
     <View style={styles.container}>
+      <StatusBar
+        barStyle="dark-content" // makes text/icons white
+        backgroundColor="transparent" // optional, for Android
+        translucent={true} // allows gradient to extend under status bar
+      />
       {/* ===== HEADER ===== */}
       <LinearGradient
         colors={["#0F4C75", "#1B6CA8", "#4F46E5"]}
@@ -23,13 +28,12 @@ export default function ProfileLayout({ title, subtitle, children, image }) {
 
 const styles = StyleSheet.create({
   headerSection: {
-    paddingTop: 20,
+    paddingTop: 40,
     paddingBottom: 30,
     alignItems: "center",
     borderBottomLeftRadius: 40,
     borderBottomRightRadius: 40,
   },
-
   headerTitle: {
     fontSize: 24,
     fontWeight: "bold",

@@ -10,6 +10,7 @@ import {
 import { Picker } from "@react-native-picker/picker";
 import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 import PageLayout from "../../components/PageLayout";
+import ContentCard from "../../components/ContentCard";
 
 export default function ManageEvents({ navigation }) {
   const [selectedEvent, setSelectedEvent] = useState("");
@@ -88,45 +89,46 @@ export default function ManageEvents({ navigation }) {
         showsVerticalScrollIndicator={false}
       >
         {/* Event Dropdown */}
-        <Text style={styles.label}>Select Event</Text>
-        <View style={styles.inputWrapper}>
-          <Ionicons
-            name="calendar-outline"
-            size={20}
-            color="#4F46E5"
-            style={{ marginRight: 8 }}
-          />
-          <Picker
-            style={{ flex: 1 }}
-            selectedValue={selectedEvent}
-            onValueChange={handleEventChange}
-          >
-            <Picker.Item label="Select Event" value="" />
-            {Object.keys(events).map((e) => (
-              <Picker.Item key={e} label={e} value={e} />
-            ))}
-          </Picker>
-        </View>
+        <ContentCard>
+          <Text style={styles.label}>Select Event</Text>
+          <View style={styles.inputWrapper}>
+            <Ionicons
+              name="calendar-outline"
+              size={20}
+              color="#4F46E5"
+              style={{ marginRight: 8 }}
+            />
+            <Picker
+              style={{ flex: 1 }}
+              selectedValue={selectedEvent}
+              onValueChange={handleEventChange}
+            >
+              <Picker.Item label="Select Event" value="" />
+              {Object.keys(events).map((e) => (
+                <Picker.Item key={e} label={e} value={e} />
+              ))}
+            </Picker>
+          </View>
 
-        {/* Status Dropdown */}
-        <Text style={styles.label}>Status</Text>
-        <View style={styles.inputWrapper}>
-          <MaterialIcons
-            name={status === "edit" ? "edit" : "visibility"}
-            size={20}
-            color={status === "edit" ? "#10B981" : "#6B7280"}
-            style={{ marginRight: 8 }}
-          />
-          <Picker
-            style={{ flex: 1 }}
-            selectedValue={status}
-            onValueChange={(val) => setStatus(val)}
-          >
-            <Picker.Item label="View" value="view" />
-            <Picker.Item label="Edit" value="edit" />
-          </Picker>
-        </View>
-
+          {/* Status Dropdown */}
+          <Text style={styles.label}>Status</Text>
+          <View style={styles.inputWrapper}>
+            <MaterialIcons
+              name={status === "edit" ? "edit" : "visibility"}
+              size={20}
+              color={status === "edit" ? "#10B981" : "#6B7280"}
+              style={{ marginRight: 8 }}
+            />
+            <Picker
+              style={{ flex: 1 }}
+              selectedValue={status}
+              onValueChange={(val) => setStatus(val)}
+            >
+              <Picker.Item label="View" value="view" />
+              <Picker.Item label="Edit" value="edit" />
+            </Picker>
+          </View>
+        </ContentCard>
         {/* Event fields */}
         {selectedEvent !== "" && (
           <>
