@@ -101,7 +101,7 @@ export default function CourseListScreen({ navigation }) {
   };
 
   return (
-    <>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#EEF2FF" }}>
       <PageLayout
         title="Gurucool Courses"
         subtitle="Available courses for trainers"
@@ -194,7 +194,7 @@ export default function CourseListScreen({ navigation }) {
           })}
         </ScrollView>
       </View>
-    </>
+    </SafeAreaView>
   );
 }
 

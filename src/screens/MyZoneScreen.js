@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 import ProfileLayout from "../components/ProfileLayout";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width } = Dimensions.get("window");
 const TILE_WIDTH = (width - 20 * 3) / 2;
@@ -60,36 +61,38 @@ const MENU_ITEMS = [
 
 export default function MyZoneScreen({ navigation }) {
   return (
-    <View style={styles.container}>
-      {/* Header */}
-      <ProfileLayout
-        title="Trainer Zone"
-        subtitle="Manage your admin activities"
-        image={{
-          uri: "https://img.icons8.com/color/48/000000/worker-male.png",
-        }}
-      />
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#EEF2FF" }}>
+      <View style={styles.container}>
+        {/* Header */}
+        <ProfileLayout
+          title="Trainer Zone"
+          subtitle="Manage your admin activities"
+          image={{
+            uri: "https://img.icons8.com/color/48/000000/worker-male.png",
+          }}
+        />
 
-      {/* Content Below Header */}
-      <ScrollView
-        contentContainerStyle={styles.contentContainer}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.grid}>
-          {MENU_ITEMS.map((item) => (
-            <TouchableOpacity
-              key={item.id}
-              style={[styles.tile, { backgroundColor: item.bgColor }]}
-              activeOpacity={0.85}
-              onPress={() => navigation.navigate(item.screen)}
-            >
-              {item.icon}
-              <Text style={styles.tileText}>{item.title}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </ScrollView>
-    </View>
+        {/* Content Below Header */}
+        <ScrollView
+          contentContainerStyle={styles.contentContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.grid}>
+            {MENU_ITEMS.map((item) => (
+              <TouchableOpacity
+                key={item.id}
+                style={[styles.tile, { backgroundColor: item.bgColor }]}
+                activeOpacity={0.85}
+                onPress={() => navigation.navigate(item.screen)}
+              >
+                {item.icon}
+                <Text style={styles.tileText}>{item.title}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 }
 

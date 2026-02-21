@@ -14,7 +14,11 @@ const Stack = createNativeStackNavigator();
 export default function MyZoneStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="MyZoneHome" component={MyZoneScreen} />
+      <Stack.Screen
+        name="MyZoneHome"
+        component={MyZoneScreen}
+        options={{ title: "" }}
+      />
       <Stack.Screen
         name="ManageEventsScreen"
         component={ManageEvents}

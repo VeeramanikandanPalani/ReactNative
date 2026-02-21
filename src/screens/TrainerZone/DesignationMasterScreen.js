@@ -12,6 +12,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import PageLayout from "../../components/PageLayout";
 import ContentCard from "../../components/ContentCard";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function DesignationMaster({ navigation }) {
   const [designationCode, setDesignationCode] = useState("");
@@ -31,79 +32,81 @@ export default function DesignationMaster({ navigation }) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#EEF2FF" }}>
-      {/* Header */}
-      <PageLayout
-        title="Designation Master"
-        subtitle="Create and manage designations"
-        image={{
-          uri: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-        }}
-      />
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#EEF2FF" }}>
+      <View style={{ flex: 1, backgroundColor: "#EEF2FF" }}>
+        {/* Header */}
+        <PageLayout
+          title="Designation Master"
+          subtitle="Create and manage designations"
+          image={{
+            uri: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+          }}
+        />
 
-      {/* Scrollable Form */}
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
-      >
-        <ScrollView
-          contentContainerStyle={{ padding: 20, paddingBottom: 50 }}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
+        {/* Scrollable Form */}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={{ flex: 1 }}
         >
-          <ContentCard>
-            {/* Designation Code */}
-            <Text style={styles.label}>Designation Code</Text>
-            <View style={styles.inputWrapper}>
-              <TextInput
-                style={styles.input}
-                placeholder="Enter Designation Code"
-                value={designationCode}
-                onChangeText={setDesignationCode}
-              />
-            </View>
+          <ScrollView
+            contentContainerStyle={{ padding: 20, paddingBottom: 50 }}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            <ContentCard>
+              {/* Designation Code */}
+              <Text style={styles.label}>Designation Code</Text>
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter Designation Code"
+                  value={designationCode}
+                  onChangeText={setDesignationCode}
+                />
+              </View>
 
-            {/* Designation Name */}
-            <Text style={styles.label}>Designation Name</Text>
-            <View style={styles.inputWrapper}>
-              <TextInput
-                style={styles.input}
-                placeholder="Enter Designation Name"
-                value={designationName}
-                onChangeText={setDesignationName}
-              />
-            </View>
+              {/* Designation Name */}
+              <Text style={styles.label}>Designation Name</Text>
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter Designation Name"
+                  value={designationName}
+                  onChangeText={setDesignationName}
+                />
+              </View>
 
-            {/* Buttons */}
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={[styles.button, { backgroundColor: "#6B7280" }]}
-                onPress={() => navigation.goBack()}
-              >
-                <Ionicons name="arrow-back" size={18} color="#fff" />
-                <Text style={styles.btnText}>Back</Text>
-              </TouchableOpacity>
+              {/* Buttons */}
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                  style={[styles.button, { backgroundColor: "#6B7280" }]}
+                  onPress={() => navigation.goBack()}
+                >
+                  <Ionicons name="arrow-back" size={18} color="#fff" />
+                  <Text style={styles.btnText}>Back</Text>
+                </TouchableOpacity>
 
-              <TouchableOpacity
-                style={[styles.button, { backgroundColor: "#F59E0B" }]}
-                onPress={handleReset}
-              >
-                <Ionicons name="refresh" size={18} color="#fff" />
-                <Text style={styles.btnText}>Reset</Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.button, { backgroundColor: "#F59E0B" }]}
+                  onPress={handleReset}
+                >
+                  <Ionicons name="refresh" size={18} color="#fff" />
+                  <Text style={styles.btnText}>Reset</Text>
+                </TouchableOpacity>
 
-              <TouchableOpacity
-                style={[styles.button, { backgroundColor: "#2563EB" }]}
-                onPress={handleSubmit}
-              >
-                <Ionicons name="checkmark" size={18} color="#fff" />
-                <Text style={styles.btnText}>Submit</Text>
-              </TouchableOpacity>
-            </View>
-          </ContentCard>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </View>
+                <TouchableOpacity
+                  style={[styles.button, { backgroundColor: "#2563EB" }]}
+                  onPress={handleSubmit}
+                >
+                  <Ionicons name="checkmark" size={18} color="#fff" />
+                  <Text style={styles.btnText}>Submit</Text>
+                </TouchableOpacity>
+              </View>
+            </ContentCard>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </View>
+    </SafeAreaView>
   );
 }
 

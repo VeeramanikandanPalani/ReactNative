@@ -14,6 +14,7 @@ import { Picker } from "@react-native-picker/picker";
 import { Ionicons } from "@expo/vector-icons";
 import PageLayout from "../../components/PageLayout";
 import ContentCard from "../../components/ContentCard";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Attendance({ navigation }) {
   const events = ["Tech Fest", "Cultural Night", "Workshop 2026"];
@@ -76,140 +77,144 @@ export default function Attendance({ navigation }) {
   const showList = selectedEvent !== "" && selectedStatus !== "";
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#EEF2FF" }}>
-      {/* Header */}
-      <PageLayout
-        title="Attendance"
-        subtitle="Mark attendance for enrolled users"
-        image={{ uri: "https://cdn-icons-png.flaticon.com/512/190/190411.png" }}
-      />
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#EEF2FF" }}>
+      <View style={{ flex: 1, backgroundColor: "#EEF2FF" }}>
+        {/* Header */}
+        <PageLayout
+          title="Attendance"
+          subtitle="Mark attendance for enrolled users"
+          image={{
+            uri: "https://cdn-icons-png.flaticon.com/512/190/190411.png",
+          }}
+        />
 
-      {/* Scrollable Form */}
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
-      >
-        <ScrollView
-          contentContainerStyle={{ padding: 20, paddingBottom: 50 }}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
+        {/* Scrollable Form */}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={{ flex: 1 }}
         >
-          <ContentCard>
-            {/* Event Dropdown */}
-            <Text style={styles.label}>Event</Text>
-            <View style={styles.inputWrapper}>
-              <Ionicons name="calendar-outline" size={20} color="#4F46E5" />
-              <Picker
-                style={{ flex: 1 }}
-                selectedValue={selectedEvent}
-                onValueChange={setSelectedEvent}
-              >
-                <Picker.Item label="Select Event" value="" />
-                {events.map((e, i) => (
-                  <Picker.Item key={i} label={e} value={e} />
-                ))}
-              </Picker>
-            </View>
-
-            {/* Status Dropdown */}
-            <Text style={styles.label}>Status</Text>
-            <View style={styles.inputWrapper}>
-              <Ionicons
-                name="checkmark-circle-outline"
-                size={20}
-                color="#4F46E5"
-              />
-              <Picker
-                style={{ flex: 1 }}
-                selectedValue={selectedStatus}
-                onValueChange={setSelectedStatus}
-              >
-                <Picker.Item label="Select Status" value="" />
-                {statuses.map((s, i) => (
-                  <Picker.Item key={i} label={s} value={s} />
-                ))}
-              </Picker>
-            </View>
-
-            {/* Comment box for Rejected */}
-            {showList && selectedStatus === "Rejected" && (
-              <>
-                <Text style={styles.label}>Rejection Comment</Text>
-                <View
-                  style={[
-                    styles.inputWrapper,
-                    { height: 100, alignItems: "flex-start" },
-                  ]}
+          <ScrollView
+            contentContainerStyle={{ padding: 20, paddingBottom: 50 }}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            <ContentCard>
+              {/* Event Dropdown */}
+              <Text style={styles.label}>Event</Text>
+              <View style={styles.inputWrapper}>
+                <Ionicons name="calendar-outline" size={20} color="#4F46E5" />
+                <Picker
+                  style={{ flex: 1 }}
+                  selectedValue={selectedEvent}
+                  onValueChange={setSelectedEvent}
                 >
-                  <TextInput
-                    style={{ flex: 1, height: 90, paddingTop: 10 }}
-                    multiline
-                    placeholder="Enter reason for rejection"
-                    value={comment}
-                    onChangeText={setComment}
-                  />
-                </View>
-              </>
-            )}
+                  <Picker.Item label="Select Event" value="" />
+                  {events.map((e, i) => (
+                    <Picker.Item key={i} label={e} value={e} />
+                  ))}
+                </Picker>
+              </View>
 
-            {/* Check All / User List */}
-            {showList && (
-              <>
-                <View style={styles.checkAllContainer}>
-                  <TouchableOpacity
-                    style={styles.checkAllBtn}
-                    onPress={checkAll}
-                  >
-                    <Text style={styles.checkAllText}>Check All</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.checkAllBtn}
-                    onPress={uncheckAll}
-                  >
-                    <Text style={styles.checkAllText}>Uncheck All</Text>
-                  </TouchableOpacity>
-                </View>
-
-                <FlatList
-                  data={enrolledUsers}
-                  renderItem={renderItem}
-                  keyExtractor={(item) => item.id}
-                  scrollEnabled={false}
-                  style={{ marginTop: 10 }}
+              {/* Status Dropdown */}
+              <Text style={styles.label}>Status</Text>
+              <View style={styles.inputWrapper}>
+                <Ionicons
+                  name="checkmark-circle-outline"
+                  size={20}
+                  color="#4F46E5"
                 />
+                <Picker
+                  style={{ flex: 1 }}
+                  selectedValue={selectedStatus}
+                  onValueChange={setSelectedStatus}
+                >
+                  <Picker.Item label="Select Status" value="" />
+                  {statuses.map((s, i) => (
+                    <Picker.Item key={i} label={s} value={s} />
+                  ))}
+                </Picker>
+              </View>
 
-                {/* Buttons */}
-                <View style={styles.buttonContainer}>
-                  <TouchableOpacity
-                    style={[styles.button, { backgroundColor: "#6B7280" }]}
-                    onPress={() => navigation.goBack()}
+              {/* Comment box for Rejected */}
+              {showList && selectedStatus === "Rejected" && (
+                <>
+                  <Text style={styles.label}>Rejection Comment</Text>
+                  <View
+                    style={[
+                      styles.inputWrapper,
+                      { height: 100, alignItems: "flex-start" },
+                    ]}
                   >
-                    <Ionicons name="arrow-back" size={18} color="#fff" />
-                    <Text style={styles.btnText}>Back</Text>
-                  </TouchableOpacity>
+                    <TextInput
+                      style={{ flex: 1, height: 90, paddingTop: 10 }}
+                      multiline
+                      placeholder="Enter reason for rejection"
+                      value={comment}
+                      onChangeText={setComment}
+                    />
+                  </View>
+                </>
+              )}
 
-                  <TouchableOpacity
-                    style={[styles.button, { backgroundColor: "#F59E0B" }]}
-                    onPress={handleReset}
-                  >
-                    <Ionicons name="refresh" size={18} color="#fff" />
-                    <Text style={styles.btnText}>Reset</Text>
-                  </TouchableOpacity>
+              {/* Check All / User List */}
+              {showList && (
+                <>
+                  <View style={styles.checkAllContainer}>
+                    <TouchableOpacity
+                      style={styles.checkAllBtn}
+                      onPress={checkAll}
+                    >
+                      <Text style={styles.checkAllText}>Check All</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.checkAllBtn}
+                      onPress={uncheckAll}
+                    >
+                      <Text style={styles.checkAllText}>Uncheck All</Text>
+                    </TouchableOpacity>
+                  </View>
 
-                  <TouchableOpacity
-                    style={[styles.button, { backgroundColor: "#2563EB" }]}
-                    onPress={handleSubmit}
-                  >
-                    <Ionicons name="checkmark" size={18} color="#fff" />
-                    <Text style={styles.btnText}>Submit</Text>
-                  </TouchableOpacity>
-                </View>
-              </>
-            )}
-          </ContentCard>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </View>
+                  <FlatList
+                    data={enrolledUsers}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item.id}
+                    scrollEnabled={false}
+                    style={{ marginTop: 10 }}
+                  />
+
+                  {/* Buttons */}
+                  <View style={styles.buttonContainer}>
+                    <TouchableOpacity
+                      style={[styles.button, { backgroundColor: "#6B7280" }]}
+                      onPress={() => navigation.goBack()}
+                    >
+                      <Ionicons name="arrow-back" size={18} color="#fff" />
+                      <Text style={styles.btnText}>Back</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={[styles.button, { backgroundColor: "#F59E0B" }]}
+                      onPress={handleReset}
+                    >
+                      <Ionicons name="refresh" size={18} color="#fff" />
+                      <Text style={styles.btnText}>Reset</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={[styles.button, { backgroundColor: "#2563EB" }]}
+                      onPress={handleSubmit}
+                    >
+                      <Ionicons name="checkmark" size={18} color="#fff" />
+                      <Text style={styles.btnText}>Submit</Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              )}
+            </ContentCard>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </View>
+    </SafeAreaView>
   );
 }
 
